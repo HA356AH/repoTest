@@ -1,5 +1,0 @@
-dasdasdas
-
-dasdasdas
-dynamic_castdas
-dynamic_cast
