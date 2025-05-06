@@ -1,0 +1,650 @@
+(Spatial DS (Data Structure)) (Out1,Out2,Out3)
+El arbol R+ toma en consideración el área, el perímetro y la sobreposición de las nuevas regiones a ser creadas durante su función de Split (Node Splitting)
+	a.- Verdadero 
+	b.- Falso (correcta)
+1.- R+ tree a diferencia del R-tree evita completamente la sobreposicion entre regiones internas (cada objeto puede estar en multiples nodos si se intersecta).
+2.- El criterio principal de split en R+ no considera métricas como área, perimetro o sobreposicion, sino que intenta minimizar la duplicación de entradas y mantener regiones disjuntas-
+3.- Es el R* tree una versión mejorada del R-tree el que si considera el área, perimetro y la sobreposicion como criterios de optimización en los splits.
+(Spatial DS) (Out1, Out2, Out6)
+Son estrategias para ordenar los octantes de un octree
+I.- Nearest Neighbor
+II.- Z-order
+III.- Range Query
+IV.- Bounding Box
+V.- Todas las anteriores
+(respuesta correcta) opción FVFFF
+1.- Nearest Neigbor es una tecnica de busqueda para encontrar el punto mas cercano a otro.
+1.1.- Usa estructura como octrees o KD-trees para realizar consultas eficientes.
+2.- Z-order, tambien llamado orden de Morton
+2.1.- Estrategia de ordenamiento espacial que linealiza coordenadas multidimensionales, manteniendo proximidad espacial.
+2.1.- Se usa en octrees para ordenar octantes de forma que se preserven propiedades espaciales al recorrrerlos.
+		3.- Range Query, es una consulta, no una técnica de ordenamiento
+			3.1.- Usado para encontrar todos los datos dentro de un rango espacial, 
+				Pero no implica ordenamiento de octantes.
+		4.- Bounding Box, es una representación espacial (envolventemente minina).
+			Se usa para el agrupamiento de objetos en estructuras jerárquicas.
+ 
+(Spatial DS) (Out [1,2,6])
+La función ReInsert del Arbol R* es llamada únicamente una vez por cada nivel del árbol siempre que el nodo con overflow no sea la raíz.
+	Verdadero	
+Cuando un nodo entra en overflow, no se divide inmediatamente, como si se da en el R-tree tradicional.
+	En cambio se realiza una reinserción forzada (ReInsert)
+1.- Se elimina un porcentaje fijo (generalmente 30%) de la entradas del nodo, típicamente aquellas mas alejadas del centroide del nodo.
+2.- Estas entradas eliminadas son reinsertadas en el árbol desde la raíz.
+Esta función tiene como objetivo mejorar la distribución espacial antes de forzar un Split.
+
+La función ReInsert se aplica como mazimo una vez por nivel del árbol, para evitar bucles infinitos o reinserciones excesivas.
+Si sucede otro overflow en el mismo nivel después de una reinserción, si se procede a un Split.
+No se aplica reinserción en la raíz, allí un overflow genera directamente un Split y eventualmente un aumento en la altura del árbol.
+ 
+(Spatial DS) (Outcome [1,2,6])
+La maldición de la dimensionalidad se refeire únicamente a la dificultad de extraer una muestra representativa de un conjunto de datos a medida que este va creciendo en dimensionalidad.
+	Rpta-> Falso
+Termino acuñado por Richard Bellmann  y hace referencia a una colección de problemas y fenómenos adversos que emergen cuando se trabaja con datos en espacios de alta dimensión.
+“unicamente” no es completamente cierto, la muestra representativa solo es uno de los varios efectos de la maldición de la dimensionalidad, siendo los principales aspectos que lo componen:
+1.- Escasez de datos (sparcity): a medida que los datos aumentan tienden a dispersarse en el espacio, lo que significa que la densidad de puntos disminuye drásticamente.
+2.- Distancia menos informativa: En espacios de alta dimensión, todas las distancias tienden a parecerse, reduciendo la utilidad de las medidas como distancia euclidiana o Manhattan para tareas como claisificacion, clustering o busqueda de vecinos cercanos.
+3.- Aumento exponencial del volumen: El aumento de un espacio crece exponencialmente con la dimensión, lo que aumenta el numero de muestras necesarias para cubrirlo adecuadamente.
+4.- Problemas computacionales: Algoritmos que funcionan eficientemente el espacios bajos se vuelven computacionalmente eneficientes o inviables a altas dimensiones (e.g. R-tree pierde eficiencia)
+5.- Sobreajuste (overfitting): En modelos de arboles de decisión o redes neuronales, muchas variables irrelevantes pueden llevar a un sobreajuste si no se cuenta con suficientes datos para todas las combinaciones posibles.
+ 
+(Spatial DS) (outcome[1,2,6])
+La variante del R-tree propuesta por Green (Green approach) propone introducir el calculo del perimetro de las regiones para que estas sean cada vez mas rectangulares, y asi se evite la sobreposicion.
+	Rpta -> Falso
+Green aprroach o enfoque verde propone una estrategia orientada a la eficiencia energetica y sostenibilidad computacional, especialmente en sistemas embebidos o de bajo consumo.
+Este enfoque busca minimizar el uso de recursos computacionales (como CPU, memoria o energia) durante operaciones de busqueda o inserción.
+Puede incluir técnicas como poda temprana, simplificación de estructuras, y criterios de selección que reduzcan cálculos innecesarios.
+
+ 
+Lab (Outcome [1,2,6])
+Dada las coordenadas de cuatro puntos en el espacio 2D p1,p2,p3 y p4; implementa la función ValidSquare que devuelve verdadero si los cuatro puntos construyen un cuadrado.
+La coordenada de un punto se representa como un vector [x,y]
+Los puntos de entrada a una función no siguen ningún orden.
+Un cuadrado valido tiene cuatro lados iguales con longitud positiva y cuatro angulos iguales (angulos de 90 grados)
+
+Bool ValidSquare(vector<int>&p1, vector<int>&p2, vector<int>&p3, vector<int>&p4){
+	//	coding here
+}
+Ejemplo 1:	P1=[0,0] ; P2=[1,1] ; P3=[1,0,] ; P4=[0,1] ; tiene que devolver true
+Ejemplo 2:	P1=[0,0] ; P2=[1,1] ; P3=[1,0,] ; P4=[0,12] ; tiene que devolver false
+Ejemplo 1:	P1=[1,0] ; P2=[-1,0] ; P3=[0,1] ; P4=[0,-1] ; tiene que devolver true
+
+ 
+Solution 01
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <set>
+using namespace std;
+
+// Función para calcular la distancia al cuadrado entre dos puntos
+int distSq(const vector<int>& a, const vector<int>& b) {
+    int dx = a[0] - b[0];
+    int dy = a[1] - b[1];
+    return dx * dx + dy * dy;
+}
+
+// Verifica si los cuatro puntos forman un cuadrado
+bool ValidSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+    vector<vector<int>> points = {p1, p2, p3, p4};
+    
+    // Ordenar los puntos para que su combinación sea determinista
+    sort(points.begin(), points.end());
+
+    // Calcular todas las distancias al cuadrado entre pares relevantes
+    int d01 = distSq(points[0], points[1]);
+    int d02 = distSq(points[0], points[2]);
+    int d03 = distSq(points[0], points[3]);
+    int d12 = distSq(points[1], points[2]);
+    int d13 = distSq(points[1], points[3]);
+    int d23 = distSq(points[2], points[3]);
+
+    set<int> distances = {d01, d02, d03, d12, d13, d23};
+
+    // Un cuadrado tiene solo 2 distancias distintas (lados y diagonales)
+    if (distances.size() != 2) return false;
+
+    // La menor distancia no puede ser cero (puntos coincidentes)
+    if (*distances.begin() == 0) return false;
+
+    // Comprobación adicional: se forma un cuadrado si las diagonales son iguales y los lados también
+    // Las diagonales deben ser exactamente el doble del valor de los lados al cuadrado
+    vector<int> distVec = {d01, d02, d03, d12, d13, d23};
+    int side = *min_element(distVec.begin(), distVec.end());
+    int diag = *max_element(distVec.begin(), distVec.end());
+
+    int sideCount = count(distVec.begin(), distVec.end(), side);
+    int diagCount = count(distVec.begin(), distVec.end(), diag);
+
+    return sideCount == 4 && diagCount == 2 && diag == 2 * side;
+}
+
+// Pruebas
+int main() {
+    vector<int> p1 = {0, 0}, p2 = {1, 1}, p3 = {1, 0}, p4 = {0, 1};
+    cout << "Ejemplo 1: " << (ValidSquare(p1, p2, p3, p4) ? "true" : "false") << endl;
+
+    vector<int> q1 = {0, 0}, q2 = {1, 1}, q3 = {1, 0}, q4 = {0, 12};
+    cout << "Ejemplo 2: " << (ValidSquare(q1, q2, q3, q4) ? "true" : "false") << endl;
+
+    vector<int> r1 = {0, 0}, r2 = {-1, 0}, r3 = {0, 1}, r4 = {0, -1};
+    cout << "Ejemplo 3: " << (ValidSquare(r1, r2, r3, r4) ? "true" : "false") << endl;
+
+    return 0;
+}
+
+ 
+Solution 02
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <set>
+
+using namespace std;
+
+// Función para calcular la distancia euclidiana entre dos puntos
+double distancia(const vector<int>& p1, const vector<int>& p2) {
+    return sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2));
+}
+
+bool ValidSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+    // Almacenar los puntos en un vector para facilitar la iteración
+    vector<vector<int>> puntos = {p1, p2, p3, p4};
+    set<double> distancias;
+
+    // Calcular todas las distancias posibles entre los cuatro puntos
+    for (int i = 0; i < 4; ++i) {
+        for (int j = i + 1; j < 4; ++j) {
+            distancias.insert(distancia(puntos[i], puntos[j]));
+        }
+    }
+
+    // Un cuadrado tiene exactamente dos longitudes de distancia únicas:
+    // la longitud del lado y la longitud de la diagonal (lado * sqrt(2)).
+    if (distancias.size() != 2) {
+        return false;
+    }
+
+    // Convertir el set de distancias a un vector para acceder fácilmente
+    vector<double> dist_vec(distancias.begin(), distancias.end());
+
+    double lado, diagonal;
+    if (dist_vec[0] < dist_vec[1]) {
+        lado = dist_vec[0];
+        diagonal = dist_vec[1];
+    } else {
+        lado = dist_vec[1];
+        diagonal = dist_vec[0];
+    }
+
+    // Verificar si la longitud del lado es positiva
+    if (lado <= 0) {
+        return false;
+    }
+
+    // Verificar si la relación entre la diagonal y el lado es aproximadamente sqrt(2)
+    return abs(diagonal - lado * sqrt(2)) < 1e-9;
+}
+
+int main() {
+    vector<int> p1_ej1 = {0, 0};
+    vector<int> p2_ej1 = {1, 1};
+    vector<int> p3_ej1 = {1, 0};
+    vector<int> p4_ej1 = {0, 1};
+    cout << "Ejemplo 1: " << (ValidSquare(p1_ej1, p2_ej1, p3_ej1, p4_ej1) ? "true" : "false") << endl;
+
+    vector<int> p1_ej2 = {0, 0};
+    vector<int> p2_ej2 = {1, 1};
+    vector<int> p3_ej2 = {1, 0};
+    vector<int> p4_ej2 = {0, 12};
+    cout << "Ejemplo 2: " << (ValidSquare(p1_ej2, p2_ej2, p3_ej2, p4_ej2) ? "true" : "false") << endl;
+
+    vector<int> p1_ej3 = {0, 0};
+    vector<int> p2_ej3 = {-1, 0};
+    vector<int> p3_ej3 = {0, 1};
+    vector<int> p4_ej3 = {0, -1};
+    cout << "Ejemplo 3: " << (ValidSquare(p1_ej3, p2_ej3, p3_ej3, p4_ej3) ? "true" : "false") << endl;
+
+    return 0;
+}
+
+ 
+Theory (Outcome [1,2,5])
+Se tiene el siguiente nodo (Nodo 1) de un R+ tree, conteniendo los siguientes rectángulos:
+(Xmin,Ymin),(Xmax,Ymax)
+A=(144,699),(208,752)
+B=(-18,640),(69,721)
+C=(79,662),(112,717)
+D=(124,650),(185,691)
+E=(195,619),(255,686)
+F=(92,591),(176,637)
+G=(5,534),(42,594)
+H=(59,488),(149,1109)
+I=(188,458),(219,608)
+ 
+ 
+Se ha llegado a un overflow de dicho nodo, y lo que se quiere hacer ahora es un SplitNode, llamando al metodo PACK (y sus funciones internas PARTITION y SWEEP) para solucionar dicho. Explicar paso a paso cual seria el resultado de dicha partición, usando el fill-factor igual a 4. Puede hacer referencia a los códigos de líneas de cada función dentro del articulo original (e.g. PA1, SW1, P1)
+ 
+(Outcome [1,2,6])Modification Box es la única estrategia (de las presentadas en clase) que me almacena las nuevas versiones generando una nueva rama (branch)
+	Rpta-> falso
+(Outcome [1,2,6]) La retroactividad Non-oblivious y la retroactividad parcial permiten consultar e insertar datos en el pasado.
+	Rpta->falso
+La retroactividad Non-Oblivious y la retroactividad parcial permiten consultar e insertar datos en el pasado.	FALSO
+De lo propuesto por Fahad et al., los métodos de la categoría Model-Bases utilizan el criterio del vecino mas cercano para calcular los grupos solicitados. FALSO
+La persistencia parcial, completa y funcional nos permiten consultar y modificar todos los estados de nuestra estructura de datos. FALSO
+La persistencia parcial en un árbol binario, tras “n” actualizaciones, Path Copying usa un tiempo de O (n log n) pero ocupa un espacio total de O(Log n) FALSO
+ 
+Baile galletas
+#include <iostream>
+#include <vector>
+#include <numeric>
+#include <algorithm>
+
+using namespace std;
+
+int distributeCookies(vector<int>& cookies, int k) {
+    int n = cookies.size();
+    if (k > n) {
+        return *max_element(cookies.begin(), cookies.end()); // Si hay más estudiantes que bolsas, un estudiante recibirá la bolsa más grande.
+    }
+
+    long long totalCookies = accumulate(cookies.begin(), cookies.end(), 0LL);
+    long long low = *max_element(cookies.begin(), cookies.end()); // Un estudiante al menos recibirá la bolsa más grande.
+    long long high = totalCookies; // En el peor caso, un estudiante recibe todas las galletas.
+    int ans = high;
+
+    while (low <= high) {
+        long long mid = low + (high - low) / 2;
+        int studentsNeeded = 1;
+        long long currentStudentCookies = 0;
+        bool possible = true;
+
+        for (int cookie : cookies) {
+            if (cookie > mid) {
+                possible = false;
+                break;
+            }
+            if (currentStudentCookies + cookie <= mid) {
+                currentStudentCookies += cookie;
+            } else {
+                studentsNeeded++;
+                currentStudentCookies = cookie;
+            }
+        }
+
+        if (possible && studentsNeeded <= k) {
+            ans = mid;
+            high = mid - 1; // Intentar una cantidad menor para una distribución más equitativa.
+        } else {
+            low = mid + 1;
+        }
+    }
+    return ans;
+}
+
+int main() {
+    // Ejemplo 1
+    vector<int> cookies1 = {8, 15, 10, 20, 8};
+    int k1 = 2;
+    cout << "Ejemplo 1: Max galletas por estudiante = " << distributeCookies(cookies1, k1) << endl; // Output: 31
+
+    // Ejemplo 2
+    vector<int> cookies2 = {6, 1, 3, 2, 2, 4, 1, 2};
+    int k2 = 3;
+    cout << "Ejemplo 2: Max galletas por estudiante = " << distributeCookies(cookies2, k2) << endl; // Output: 7
+
+    return 0;
+}
+
+
+ 
+
+Clustering DBSCan
+Buenos optimos valores de nuestros parametros para mejorar el rendimiento del algoritmo
+Funcion de preprocesamiento, funcionanaod y correctamente justificada con comentarios
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
+
+using namespace std;
+
+// Estructura para representar un punto 2D
+struct Point {
+    double x;
+    double y;
+    int clusterID; // -1 indica ruido
+};
+
+// Función para generar puntos aleatorios en un rango dado
+vector<Point> generateRandomPoints(int numPoints, double minVal, double maxVal) {
+    vector<Point> points(numPoints);
+    srand(time(0)); // Inicializar la semilla aleatoria
+
+    for (int i = 0; i < numPoints; ++i) {
+        points[i].x = minVal + (double)rand() / RAND_MAX * (maxVal - minVal);
+        points[i].y = minVal + (double)rand() / RAND_MAX * (maxVal - minVal);
+        points[i].clusterID = -1; // Inicialmente todos los puntos son no clasificados
+    }
+    return points;
+}
+
+// Función para calcular la distancia euclidiana entre dos puntos
+double euclideanDistance(const Point& p1, const Point& p2) {
+    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+}
+
+// *** Aquí deberás implementar el algoritmo DBSCAN ***
+void DBSCAN(vector<Point>& points, double eps, int minPts) {
+    cout << "Implementación del algoritmo DBSCAN aquí..." << endl;
+    // ... (Tu implementación de DBSCAN irá aquí) ...
+}
+
+// *** Aquí podrías implementar una función de pre-procesamiento ***
+vector<Point> preprocessData(vector<Point>& points) {
+    cout << "Función de pre-procesamiento (opcional)..." << endl;
+    // ... (Tu lógica de pre-procesamiento irá aquí) ...
+    return points;
+}
+
+// *** Aquí podrías implementar una función para encontrar buenos parámetros ***
+void findOptimalParameters(vector<Point>& points) {
+    cout << "Función para encontrar parámetros óptimos..." << endl;
+    // ... (Tu lógica para encontrar eps y minPts óptimos irá aquí) ...
+}
+
+int main() {
+    int numPoints = 50;
+    double minVal = 0.0;
+    double maxVal = 10.0;
+    vector<Point> points = generateRandomPoints(numPoints, minVal, maxVal);
+
+    cout << "Generando " << numPoints << " puntos aleatorios." << endl;
+    // Puedes imprimir los puntos si lo deseas para inspección inicial
+    /*
+    for (const auto& p : points) {
+        cout << "(" << p.x << ", " << p.y << ")" << endl;
+    }
+    */
+
+    // *** Llamada a la función de pre-procesamiento (opcional) ***
+    vector<Point> preprocessedPoints = preprocessData(points);
+
+    // *** Llamada a la función para encontrar parámetros óptimos ***
+    findOptimalParameters(preprocessedPoints);
+
+    // *** Llamada al algoritmo DBSCAN con parámetros (ejemplo) ***
+    double epsilon = 1.0; // Valor de ejemplo para eps
+    int minPoints = 3;    // Valor de ejemplo para minPts
+    DBSCAN(preprocessedPoints, epsilon, minPoints);
+
+    cout << "Ejecución de DBSCAN completada." << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+--------------------------
+
+
+Pregunta 1:
+
+Pregunta: La maldición de la dimensionalidad se refiere únicamente a como las dimensiones hacen más difícil el cálculo de las distancias entre los datos a medida que estos crecen dimensionalmente.
+Respuesta: Falso (La respuesta correcta es 'Falso')
+Pregunta 2:
+
+Pregunta: El Kd-tree es una estructura de datos que me permite indizar únicamente datos en 2d y 3d (d = dimensiones).
+Respuesta: Falso (La respuesta correcta es 'Falso')
+Pregunta 3:
+
+Pregunta: El pr-quadtree tiene como estrategia la partición...
+(La pregunta está incompleta en el PDF)
+Pregunta 4:
+
+(Pregunta sobre la función Overflow Treatment en R-trees)
+Respuesta: Incompleto (Comentario: Overflow Treatment. Reinsert (0/2) No implementado. Split (0/5) No implementado.)
+Pregunta 8:
+
+Pregunta: Detalle los pasos necesarios para realizar una búsqueda de rango (range query) dentro de un KD-tree, como en la siguiente imagen: (Se proporciona una imagen)
+Respuesta del estudiante: Para realizar un range query en un kd tree, primero se envía los parámetros necesarios respecto a la cantidad de dimensiones que fue construido el árbol. Entonces partiendo del nodo raíz, se comprueba si es que los sub-árboles pueden contener nodos dentro del rango enviado. Por ejemplo si se está buscando en la primera dimensión entre x[5-10] si el nodo raíz parte x en 3, solo la parte derecha puede contener, por lo tanto solo busca ahí. Pero si partiera x entre ese rango se tendría que realizar la búsqueda en ambos sub-árboles. Así se continúa recursivamente intercalando las...
+Puntos Clave Adicionales del PDF:
+
+El examen se centra en estructuras de datos espaciales.
+Se evalúa la comprensión de conceptos teóricos (maldición de la dimensionalidad, KD-trees) y la capacidad de implementar algoritmos (Overflow Treatment en R-trees, búsqueda de rango en KD-trees).
+Se presta atención a la corrección de las respuestas y a la completitud de las implementaciones.
+
+
+
+Pregunta 1:
+
+Pregunta: La función Reinsert del árbol R* (R* tree), es llamada únicamente una vez por cada nivel del árbol siempre que el nodo con overflow no sea la raíz.
+Respuesta: Verdadero (La respuesta correcta es 'Verdadero')
+Pregunta 2:
+
+Pregunta: En el árbol R+ (R+ tree) el parámetro fill-factor me ayuda a limitar la cantidad de nodos que tendrá dicho nivel de árbol.
+Respuesta: Falso (La respuesta correcta es 'Falso')
+Pregunta 9 (Implementación de Overflow Treatment):
+
+Pregunta: (Se pide la implementación de la función OverflowTreatment para un R*-tree, incluyendo las funciones Reinsert y Split).
+Respuesta del estudiante (Fragmento):
+C++
+
+RStarNode  OverflowTreatment (RStarNode *node) {
+    //si es diferente de root y es el primer insert se llama a Reinsert
+    if (node != m_root && firstinsert)
+    {
+        Reinsert(node);
+        return NULL;
+    }
+    RStarNode *splitNode =split(node) ;
+    if (f(node==m\_root)){
+        //crear nuevo root y luego terminar
+        RStarNode new_m_root = new RStarNode();
+        return NULL;
+    }
+    return splitNode;
+}
+
+//Funcion Relnsert
+void Relnsert(RStarNode *node){
+
+}
+
+//Funcion Split
+RStarNode Split (RStarNode node) {
+    RStarNode new_node = new RStarNode();
+}
+Comentarios del evaluador:
+"El alumno intentó implementar el primer paso de la función Reinsert, sin embargo olvidó previamente calcular el centro del parámetro 'node', luego recién se calculan las distancias a este."
+"No se ha implementado la función Split()"
+"La sentencia if(root->leaves == 0) {...} La primera llamada de overflowtreatment. no es correcta pues se debe confirmar que NO se ha llamado anteriormente a la función Reinsert en el NIVEL del arbol donde está 'node', no en la raíz."
+Pregunta 10 (Implementación de Búsqueda Ortogonal en KD-tree):
+
+Pregunta: Usando la estructura de datos KD-tree, implemente una función para dar soporte a la búsqueda ortogonal en rango como se observa en la Figura 1 (izquierda). Usar la sintaxis desarrollada en laboratorio: std::vector<ElemType> ortogonal_range_query(const std::vector<Pair<double, double>> &ranges) const; Retorna un vector de los valores contenidos en el hipercubo, el cual está formado por un vector ranges de tamaño N...
+Comentarios del evaluador: (No se proporcionó una respuesta del estudiante en el extracto del PDF)
+
+
+
+
+De acuerdo, aquí están las preguntas y respuestas extraídas directamente del PDF "2022-1 - Parcial.pdf":
+
+Pregunta 1:
+
+Pregunta: La función Reinsert del árbol R* (R* tree), es llamada únicamente una vez por cada nivel del árbol siempre que el nodo con overflow no sea la raíz.
+Respuesta: Verdadero (La respuesta correcta es 'Verdadero')
+Pregunta 2:
+
+Pregunta: La variante del R-tree propuesta por Green (Green approach) propone introducir el cálculo del perímetro de las regiones para que estas sean cada vez más rectangulares, y así se evite la sobreposición.
+Respuesta: Verdadero (La respuesta correcta es 'Verdadero')
+Pregunta 3:
+
+Pregunta: La función PickSeeds del árbol R (R-tree) tiene como objetivo encontrar cuáles son los mejores objetos datos para dividir en dos un nodo con overflow.
+Respuesta: Verdadero (La respuesta correcta es 'Verdadero')
+Pregunta 9 (Implementación de Overflow Treatment):
+
+Pregunta: Con la información anteriormente detallada: 1. Implemente en C++ la función RStar::Overflow Treatment (RStarNode *node), incluyendo sus dos funciones internas Reinsert y Split. 2. Adjuntar un archivo.cpp 3. IMPORTANTE: Dejar comentarios en el código para entender que acción está intentando realizar.
+
+Respuesta del estudiante (Fragmento):
+
+C++
+
+RStarNode  OverflowTreatment (RStarNode *node) {
+    //si es diferente de root y es el primer insert se llama a Reinsert
+    if (node != m_root && firstinsert)
+    {
+        Reinsert(node);
+        return NULL;
+    }
+    RStarNode *splitNode =split(node) ;
+    if (f(node==m_root)){
+        //crear nuevo root y luego terminar
+        RStarNode new_m_root = new RStarNode();
+        return NULL;
+    }
+    return splitNode;
+}
+
+//Funcion Relnsert
+void Relnsert(RStarNode *node){
+
+}
+
+//Funcion Split
+RStarNode Split (RStarNode node) {
+    RStarNode new_node = new RStarNode();
+}
+Comentario del evaluador:
+
+"El alumno no envío archivo.cpp como es requerido."
+"El texto enviado en la casilla de texto no está indentada y dificulta la lectura."
+
+
+
+
+
+
+Pregunta 1:
+
+Pregunta: La maldición de la dimensionalidad se refiere únicamente a como las dimensiones hacen más difícil el cálculo de las distancias entre los datos a medida que estos crecen dimensionalmente.
+Respuesta: Falso (La respuesta correcta es 'Falso')
+Pregunta 2:
+
+Pregunta: La maldición de la dimensionalidad se refiere únicamente a la dificultad de extraer una muestra representativa de un conjunto de datos a medida que este va creciendo en dimensionalidad.
+Respuesta: Falso
+Pregunta 3:
+
+Pregunta: El árbol R+ (R+ tree) toma en consideración el área, perímetro y la sobreposición de las nuevas regiones a ser creadas durante su función de split (Node splitting).
+Respuesta: Falso
+Pregunta 4:
+
+Pregunta: La función Reinsert del árbol R* (R* tree), es llamada únicamente una vez por cada nivel del árbol siempre que el nodo con overflow no sea la raíz.
+Respuesta: Verdadero
+Pregunta 5:
+
+Pregunta: La función PickSeeds del árbol R (R-tree) tiene como objetivo encontrar cuáles son los mejores objetos datos para dividir en dos un nodo con overflow.
+Respuesta: Verdadero
+Pregunta 6 (Implementación de Búsqueda):
+
+Pregunta: Dado un conjunto de puntos de gran tamaño (1 billón de elementos) y de alta dimensionalidad (más de 12 dimensiones) que consisten de números enteros z, donde cada punto formado por una entrada es asociado a un número entero positivo (el dato a indexar). Hallar el máximo y mínimo valor de los elementos insertados cuyos correspondientes puntos se encuentran fuera de un punto y un rango. Se pide describir a detalle el procedimiento usado junto a su complejidad. Ejemplo: Después de realizar la búsqueda del punto rojo y un range, encontramos el máximo y mínimo...
+Respuesta del estudiante: (No se proporcionó una respuesta completa en el extracto del PDF)
+Pregunta 7 (Implementación de Delete):
+
+Pregunta: Con la información anteriormente detallada: 1. Implemente en C++ la función RTree::Delete(Rect Entry) que remueve la entrada Entry y deja nuevamente el árbol cumpliendo sus propiedades. Esta implementación DEBE incluir sus dos funciones internas FindLeaf y CondenseTree, para asegurar el correcto funcionamiento de la estructura. 2. Adjuntar un archivo.cpp 3. IMPORTANTE: Dejar comentarios en el código para entender que acción está intentando realizar.
+Comentario del evaluador: No es un archivo.cpp con código. No hay contenido para revisar.
+
+
+
+
+
+
+Pregunta 1:
+
+Pregunta: El árbol R+ (R+ tree) toma en consideración el área, perímetro y la sobreposición de las nuevas regiones a ser creadas durante su función de split (Node splitting).
+Respuesta: Falso (La respuesta correcta es 'Falso')
+Pregunta 2:
+
+Pregunta: La función Reinsert del árbol R* (R* tree), es llamada únicamente una vez por cada nivel del árbol siempre que el nodo con overflow no sea la raíz.
+Respuesta: Verdadero
+Pregunta 3:
+
+Pregunta: La función PickSeeds del árbol R (R-tree) tiene como objetivo encontrar cuáles son los mejores objetos datos para dividir en dos un nodo con overflow.
+Respuesta: Verdadero
+Pregunta 4:
+
+Pregunta: La maldición de la dimensionalidad se refiere al conjunto de fenómenos que aparece tras el crecimiento exponencial del espacio de los datos.
+Respuesta: Verdadero
+Pregunta 5:
+
+Pregunta: Son estrategias para ordenar los octantes de un octree:
+I. Nearest Neighbor
+II. Z-order
+III. Range Query
+IV. Bounding Box
+V. Todas las anteriores
+Respuesta: FVFFF (Solo Z-order es una estrategia de ordenamiento de octantes)
+
+
+
+
+
+1. Implementación de PickSeeds en R-tree:
+
+Pregunta: Implemente la función PickSeeds para un R-tree. Esta función toma como entrada un conjunto de rectángulos y debe devolver los índices de los dos rectángulos que se utilizarán como "semillas" para dividir el conjunto en dos grupos. Utilice la estrategia de elegir los pares que maximizan la distancia entre sus bordes.
+
+Qué se espera en la respuesta:
+Código C++ o pseudocódigo que implemente la lógica de PickSeeds.
+Cálculo de la distancia entre los bordes de los rectángulos (por ejemplo, la diferencia normalizada entre los bordes más alejados).
+Iteración sobre todos los pares de rectángulos para encontrar el par con la máxima distancia.
+Retorno de los índices de los rectángulos seleccionados.
+Comentarios que expliquen claramente los pasos del algoritmo.
+2. Implementación de FindLeaf en R-tree:
+
+Pregunta: Implemente la función FindLeaf para un R-tree. Esta función toma como entrada un rectángulo y debe encontrar la hoja del árbol que podría contener ese rectángulo.
+
+Qué se espera en la respuesta:
+Código C++ o pseudocódigo que implemente la lógica de FindLeaf.
+Recorrido del R-tree desde la raíz hasta una hoja.
+En cada nivel, selección del subárbol cuyo MBR (Minimum Bounding Rectangle) contiene el rectángulo de búsqueda.
+Retorno del nodo hoja encontrado.
+Manejo de casos especiales (por ejemplo, si el árbol está vacío).
+Comentarios que expliquen el proceso de búsqueda.
+3. Implementación de Range Query en KD-tree (con genéricos):
+
+Pregunta: Implemente la función RangeQuery para un KD-tree. Esta función toma como entrada un rango (definido por límites mínimos y máximos para cada dimensión) y debe devolver todos los puntos del KD-tree que se encuentren dentro de ese rango. Use plantillas (templates) de C++ para que funcione con cualquier tipo de dato.
+
+Qué se espera en la respuesta:
+Código C++ que utilice templates para la implementación de RangeQuery.
+Recorrido del KD-tree.
+Poda de subárboles que no intersectan el rango de búsqueda.
+Verificación de si los puntos en los nodos hoja están dentro del rango.
+Almacenamiento y retorno de los puntos encontrados.
+Comentarios que expliquen la lógica del recorrido y la poda.
+4. Implementación de Split en R*-tree:
+
+Pregunta: Implemente la función Split para un R*-tree. Esta función toma como entrada un nodo que ha sufrido un overflow y debe dividirlo en dos nodos, minimizando el área y la superposición de los MBRs de los nuevos nodos.
+
+Qué se espera en la respuesta:
+Código C++ o pseudocódigo que implemente la lógica de Split.
+Implementación de una estrategia para elegir el eje de división (por ejemplo, el eje con la mayor extensión).
+Implementación de una estrategia para distribuir las entradas entre los dos nodos (considerando minimizar el área y la superposición).
+Creación de los dos nuevos nodos.
+Actualización de los MBRs de los nodos padre.
+Comentarios que expliquen las decisiones tomadas durante la división.
+5.  Implementación de vecinos cercanos en KD-tree:
+
+Pregunta: Implemente una función kNearestNeighbors para un KD-tree. La función debe recibir un punto y un entero k, y debe devolver los k puntos más cercanos al punto dado dentro del KD-tree.
+
+Qué se espera en la respuesta:
+Código C++ o pseudocódigo.
+Uso de una estructura de datos (como una cola de prioridad) para mantener los k vecinos más cercanos encontrados hasta el momento.
+Recorrido del KD-tree, priorizando la búsqueda en las ramas más cercanas al punto objetivo.
+Cálculo de distancias.
+Actualización de los k vecinos más cercanos según se encuentren puntos más cercanos.
